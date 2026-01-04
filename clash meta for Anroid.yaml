@@ -173,4 +173,18 @@ rule-providers:
   direct:
     type: http
     behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
+    path: ./ruleset/direct.yaml
+    interval: 86400
+
+# 4. 路由规则
+rules:
+  - RULE-SET,ads,REJECT
+  - RULE-SET,ai,🤖 全球 AI
+  - RULE-SET,github,🐱 GitHub 加速
+  - RULE-SET,google,🔍 Google 服务
+  - RULE-SET,telegram,💬 社交媒体
+  - RULE-SET,proxy,🚀 节点选择
+  - RULE-SET,direct,DIRECT
+  - GEOIP,CN,DIRECT
+  - MATCH,🐟 漏网之鱼
