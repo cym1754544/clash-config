@@ -1,0 +1,300 @@
+# 机场节点订阅
+proxy-providers:
+  airport1:
+    url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
+    type: http
+    interval: 36000
+    # path为缓存路径
+    path: ./airport1.yaml  
+    health-check:
+      enable: true
+      url: https://www.gstatic.com/generate_204
+      interval: 300
+
+# 基础连接设置
+mixed-port: 7890
+ipv6: true
+allow-lan: true
+unified-delay: false
+tcp-concurrent: true
+
+#UI面板设置
+external-controller: 127.0.0.1:9090
+external-ui: ui
+external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+secret: "cym1754544"
+
+#如何处理地理位置数据库
+geodata-mode: true
+geox-url:
+  geoip: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geoip-lite.dat"
+  geosite: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/geosite.dat"
+  mmdb: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/country-lite.mmdb"
+  asn: "https://github.com/MetaCubeX/meta-rules-dat/releases/download/latest/GeoLite2-ASN.mmdb"
+
+#进程匹配模式
+find-process-mode: strict
+#全局客户端指纹
+global-client-fingerprint: chrome
+
+#持久化缓存
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+#域名嗅探
+sniffer:
+  enable: true
+  sniff:
+    HTTP:
+      ports: [80, 8080-8880]
+      override-destination: true
+    TLS:
+      ports: [443, 8443]
+    QUIC:
+      ports: [443, 8443]
+  skip-domain:
+    - "Mijia Cloud"
+    - "+.push.apple.com"
+
+#TUN模式
+tun:
+  enable: false
+  stack: mixed
+  dns-hijack:
+    - "any:53"
+    - "tcp://any:53"
+  auto-route: true
+  auto-redirect: true
+  auto-detect-interface: true
+
+#DNS设置
+dns:
+  enable: true
+  listen: 0.0.0.0:7874
+  ipv6: false
+  enhanced-mode: fake-ip
+  fake-ip-range: 198.18.0.1/16
+  respect-rules: true
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - 223.5.5.5
+    
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
+    
+  nameserver:
+    - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
+    
+  fallback:
+    - https://dns.google/dns-query
+    - https://1.1.1.1/dns-query
+    
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "geosite:cn" 
+    - "+.msftncsi.com"
+    - "+.msftconnecttest.com"
+    - "+.gstatic.com" # 增加谷歌连接测试过滤
+    - "worktile.com" # 办公软件过滤
+    - "speedtest.net" # 增加测速过滤
+    - "stun.*.*"
+    - "ntp.*.*"
+    
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+      - 127.0.0.0/8
+      - 0.0.0.0/32
+
+#添加直连和拒绝两个节点
+proxies: 
+  - name: "直连"
+    type: direct
+    udp: true
+
+  - name: "拒绝"
+    type: reject
+
+templates:
+  # 自动测速模板 (原 smart 改为 url-test)
+  delay_tpl: &delay
+    type: url-test
+    include-all: true
+    interval: 600
+    url: http://www.gstatic.com/generate_204
+    tolerance: 50
+
+  # 故障转移模板
+  fallback_tpl: &fallback
+    type: fallback
+    include-all: true
+    interval: 300
+    url: http://www.gstatic.com/generate_204
+
+ #自动测速集合
+  delay_collection: &delay_collection
+    type: select
+    proxies:
+      - 🚀 所有-测速
+      - 🇹🇼⚡ 台湾-测速
+      - 🇭🇰⚡ 香港-测速
+      - 🇯🇵⚡ 日本-测速
+      - 🇸🇬⚡ 新加坡-测速
+      - 🇺🇸⚡ 美国-测速
+
+  #故障转移集合
+  fallback_collection: &fallback_collection
+    type: select
+    proxies:
+      - 🚑 所有-故转
+      - 🇹🇼🚑 台湾-故转
+      - 🇭🇰🚑 香港-故转
+      - 🇯🇵🚑 日本-故转
+      - 🇸🇬🚑 新加坡-故转
+      - 🇺🇸🚑 美国-故转
+
+# 所有节点自动测速模板
+  delay_all: &delay_all
+    type: url-test
+    include-all: true      # 核心：直接拉取所有底层原始节点
+    url: http://www.gstatic.com/generate_204
+    interval: 600          # 测速间隔，不宜过短，防止机场封禁
+    tolerance: 50          # 容差：只有新节点比旧节点快 50ms 以上才切换，防止频繁跳 IP
+    # 建议过滤掉不需要测速的节点（如国内、倍率过高、已过期的）
+    filter: "(?i)(香港|HK|美国|US|新加坡|SG|日本|JP|台湾|TW|韩国|KR)"
+
+# 所有节点故转模板
+  fallback_all: &fallback_all
+    type: fallback
+    include-all: true
+    url: http://www.gstatic.com/generate_204
+    interval: 300
+    lazy: true             # 闲时探测，不消耗额外流量
+    # 建议加上过滤，排除掉国内节点或无效节点
+    filter: "(?i)(香港|HK|美国|US|新加坡|SG|日本|JP|台湾|TW|韩国|KR|英国|UK)"
+
+  #原始节点手选集合
+  origin_node: &origin_node
+    type: select
+    include-all: true  # 自动拉入所有原始节点
+    proxies:
+      - 直连
+      - 拒绝
+
+proxy-groups:
+  - name: 🤖 AI集合
+    <<: *fallback_collection
+
+  - name: 🔍 Google
+    <<: *fallback_collection
+
+  - name: 🛡️ 故障转移场景
+    <<: *fallback_collection
+
+  - name: ⚡ 自动测速场景
+    <<: *delay_collection
+
+  - name: 🐟 漏网之鱼
+    type: select
+    proxies:
+      - 🚀 所有-测速     
+      - 🚑 所有-故转     
+      - 直连          
+
+  # 所有节点测速
+  - name: 🚀 所有-测速
+    <<: *delay_all
+    filter: "^((?!(直连|拒绝|流量|到期|重置|网址)).)*$"
+
+ # 所有节点故转
+  - name: 🚑 所有-故转
+    <<: *fallback_all
+    filter: "^((?!(直连|拒绝|流量|到期|重置|网址)).)*$"
+
+  # --- 香港 ---
+  - name: 🇭🇰🚑 香港-故转
+    <<: *fallback
+    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
+  - name: 🇭🇰⚡ 香港-测速
+    <<: *delay
+    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
+
+  # --- 台湾 ---
+  - name: 🇹🇼🚑 台湾-故转
+    <<: *fallback
+    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
+  - name: 🇹🇼⚡ 台湾-测速
+    <<: *delay
+    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
+
+  # --- 日本 ---
+  - name: 🇯🇵🚑 日本-故转
+    <<: *fallback
+    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
+  - name: 🇯🇵⚡ 日本-测速
+    <<: *delay
+    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
+
+  # --- 新加坡 ---
+  - name: 🇸🇬🚑 新加坡-故转
+    <<: *fallback
+    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
+  - name: 🇸🇬⚡ 新加坡-测速
+    <<: *delay
+    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
+
+  # --- 美国 ---
+  - name: 🇺🇸🚑 美国-故转
+    <<: *fallback
+    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
+  - name: 🇺🇸⚡ 美国-测速
+    <<: *delay
+    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
+
+rules:
+  - GEOIP,lan,直连,no-resolve
+  # ------AI-----
+  # Grok (xAI)
+  - DOMAIN-SUFFIX,x.ai,🤖 AI集合
+  - DOMAIN-SUFFIX,grok.com,🤖 AI集合
+  - DOMAIN-KEYWORD,grok,🤖 AI集合
+
+  # OpenAI & ChatGPT
+  - DOMAIN-KEYWORD,openai,🤖 AI集合
+  - DOMAIN-KEYWORD,chatgpt,🤖 AI集合
+  - GEOSITE,openai,🤖 AI集合
+
+  # Claude (Anthropic)
+  - DOMAIN-KEYWORD,claude,🤖 AI集合
+  - DOMAIN-KEYWORD,anthropic,🤖 AI集合
+  - GEOSITE,anthropic,🤖 AI集合
+
+  # Gemini (从 Google 剥离)
+  - DOMAIN,gemini.google.com,🤖 AI集合
+  - DOMAIN-KEYWORD,generativelanguage,🤖 AI集合
+
+  # Perplexity
+  - GEOSITE,perplexity,🤖 AI集合
+
+  - GEOSITE,github,⚡ 自动测速场景
+  - GEOSITE,twitter,⚡ 自动测速场景
+  - GEOSITE,youtube,🛡️ 故障转移场景
+  - GEOSITE,google,🔍 Google
+  - GEOSITE,telegram,⚡ 自动测速场景
+  - GEOSITE,netflix,🛡️ 故障转移场景
+  - GEOSITE,bilibili, 直连
+  - GEOSITE,spotify,🛡️ 故障转移场景
+  - GEOSITE,CN,直连
+  - GEOSITE,geolocation-!cn,⚡ 自动测速场景
+  - GEOIP,google,🔍 Google,no-resolve
+  - GEOIP,netflix,🛡️ 故障转移场景,no-resolve
+  - GEOIP,telegram,⚡ 自动测速场景,no-resolve
+  - GEOIP,twitter,⚡ 自动测速场景,no-resolve
+  - GEOIP,CN,直连,no-resolve
+  - MATCH,🐟 漏网之鱼
