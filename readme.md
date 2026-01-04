@@ -7,4 +7,5 @@
 加速链接：在你的链接前加上 https://ghproxy.net/
 
 最终示例：https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/AI.yaml
+
 最终示例：https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/clash meta for Anroid.yaml
