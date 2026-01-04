@@ -1,6 +1,5 @@
 # -------------------------------------------------------------------
-# 手机 Clash 终极分流版 (Pro)
-# 涵盖：全能 AI、Google、Apple、微软、GitHub、流媒体、BT 拦截
+# 手机 Clash 终极定制版
 # -------------------------------------------------------------------
 
 port: 7890
@@ -19,11 +18,11 @@ dns:
     - 119.29.29.29
     - 1.1.1.1
 
-# 1. 节点供应
+# 1. 节点供应 (已整合你的链接)
 proxy-providers:
-  provider1:
+  airport:
     type: http
-    url: "你的订阅链接地址" # <--- 填入你的订阅链接
+    url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=99f9908d035cb90aac4fe88b5198b4ba"
     interval: 3600
     path: ./proxies.yaml
     health-check:
@@ -33,22 +32,30 @@ proxy-providers:
 
 # 2. 策略组
 proxy-groups:
-  # --- 业务分组 ---
+  # --- 业务逻辑分组 ---
   - name: 🤖 全球 AI
     type: select
-    proxies: [🇹🇼 台湾故障转移, 🇸🇬 新加坡故障转移, 🇺🇸 美国故障转移, 🚀 节点选择]
+    proxies:
+      - 🇹🇼 台湾故障转移  # 优先台湾兜底
+      - 🇸🇬 新加坡故障转移
+      - 🇺🇸 美国故障转移
+      - 🚀 节点选择
 
   - name: 🔍 Google 服务
     type: select
-    proxies: [🇭🇰 香港自动测速, 🇸🇬 新加坡自动测速, 🇯🇵 日本自动测速, 🚀 节点选择]
+    proxies:
+      - 🇭🇰 香港自动测速  # 优先香港测速
+      - 🇸🇬 新加坡自动测速
+      - 🇯🇵 日本自动测速
+      - 🚀 节点选择
 
   - name: 🍎 Apple 服务
     type: select
-    proxies: [DIRECT, 🇭🇰 香港自动测速, 🚀 节点选择]
+    proxies: [DIRECT, 🇭🇰 香港自动测速, 🇸🇬 新加坡自动测速, 🚀 节点选择]
 
   - name: Ⓜ️ Microsoft 服务
     type: select
-    proxies: [DIRECT, 🇭🇰 香港自动测速, 🇸🇬 新加坡自动测速, 🚀 节点选择]
+    proxies: [DIRECT, 🇭🇰 香港自动测速, 🇺🇸 美国自动测速, 🚀 节点选择]
 
   - name: 🐱 GitHub 加速
     type: select
@@ -58,76 +65,72 @@ proxy-groups:
     type: select
     proxies: [🇸🇬 新加坡自动测速, 🇹🇼 台湾自动测速, 🇭🇰 香港自动测速, 🇺🇸 美国自动测速, 🚀 节点选择]
 
-  - name: 💬 社交媒体
-    type: select
-    proxies: [🇸🇬 新加坡自动测速, 🇭🇰 香港自动测速, 🇯🇵 日本自动测速, 🚀 节点选择]
-
   - name: 🚀 节点选择
     type: select
     proxies: [🇸🇬 新加坡自动测速, 🇭🇰 香港自动测速, 🇯🇵 日本自动测速, 🇺🇸 美国自动测速, 🇹🇼 台湾自动测速, DIRECT]
 
-  # --- 地区双模式子组 (简略展示逻辑，结构同前) ---
+  # --- 地区双模式子组 (自动测速 url-test & 故障转移 fallback) ---
   - name: 🇸🇬 新加坡自动测速
     type: url-test
-    use: [provider1]
+    use: [airport]
     filter: "(?i)新加坡|SG|Singapore"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
   - name: 🇸🇬 新加坡故障转移
     type: fallback
-    use: [provider1]
+    use: [airport]
     filter: "(?i)新加坡|SG|Singapore"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇭🇰 香港自动测速
     type: url-test
-    use: [provider1]
+    use: [airport]
     filter: "(?i)香港|HK|HongKong"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
   - name: 🇭🇰 香港故障转移
     type: fallback
-    use: [provider1]
+    use: [airport]
     filter: "(?i)香港|HK|HongKong"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇯🇵 日本自动测速
     type: url-test
-    use: [provider1]
+    use: [airport]
     filter: "(?i)日本|JP|Japan"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
   - name: 🇯🇵 日本故障转移
     type: fallback
-    use: [provider1]
+    use: [airport]
     filter: "(?i)日本|JP|Japan"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇺🇸 美国自动测速
     type: url-test
-    use: [provider1]
+    use: [airport]
     filter: "(?i)美国|US|States"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
   - name: 🇺🇸 美国故障转移
     type: fallback
-    use: [provider1]
+    use: [airport]
     filter: "(?i)美国|US|States"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇹🇼 台湾自动测速
     type: url-test
-    use: [provider1]
+    use: [airport]
     filter: "(?i)台湾|TW|Taiwan"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
   - name: 🇹🇼 台湾故障转移
     type: fallback
-    use: [provider1]
+    use: [airport]
     filter: "(?i)台湾|TW|Taiwan"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
@@ -136,7 +139,7 @@ proxy-groups:
     type: select
     proxies: [🚀 节点选择, DIRECT]
 
-# 3. 规则集扩展
+# 3. 远程规则集
 rule-providers:
   ai:
     type: http
@@ -144,17 +147,11 @@ rule-providers:
     url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AI/AI.yaml"
     path: ./ruleset/ai.yaml
     interval: 86400
-  apple:
+  google:
     type: http
     behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/apple.txt"
-    path: ./ruleset/apple.yaml
-    interval: 86400
-  microsoft:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/microsoft.txt"
-    path: ./ruleset/microsoft.yaml
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
+    path: ./ruleset/google.yaml
     interval: 86400
   github:
     type: http
@@ -162,51 +159,6 @@ rule-providers:
     url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/github.txt"
     path: ./ruleset/github.yaml
     interval: 86400
-  telegram:
-    type: http
-    behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegram.txt"
-    path: ./ruleset/telegram.yaml
-    interval: 86400
-  google:
+  apple:
     type: http
     behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
-    path: ./ruleset/google.yaml
-    interval: 86400
-  video:
-    type: http
-    behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
-    path: ./ruleset/video.yaml
-    interval: 86400
-  direct:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
-    path: ./ruleset/direct.yaml
-    interval: 86400
-  ads:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
-    path: ./ruleset/ads.yaml
-    interval: 86400
-
-# 4. 路由规则
-rules:
-  - RULE-SET,ads,REJECT
-  - RULE-SET,ai,🤖 全球 AI
-  - RULE-SET,github,🐱 GitHub 加速
-  - RULE-SET,google,🔍 Google 服务
-  - RULE-SET,apple,🍎 Apple 服务
-  - RULE-SET,microsoft,Ⓜ️ Microsoft 服务
-  - RULE-SET,telegram,💬 社交媒体
-  - RULE-SET,video,📺 国际视频
-  - RULE-SET,direct,DIRECT
-  # 拦截常用的 P2P/BT 关键词以防封号
-  - DOMAIN-KEYWORD,torrent,REJECT
-  - DOMAIN-KEYWORD,peerflix,REJECT
-  - GEOIP,LAN,DIRECT
-  - GEOIP,CN,DIRECT
-  - MATCH,🐟 漏网之鱼
