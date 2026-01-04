@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# 手机 Clash 终极修复版 (适配：🇺🇸 美国 01 命名格式)
+# 手机 Clash 终极修复版 - 适配“美国 01”格式
 # -------------------------------------------------------------------
 
 port: 7890
@@ -16,7 +16,6 @@ dns:
   nameserver:
     - 223.5.5.5
     - 119.29.29.29
-    - 1.1.1.1
 
 # 1. 节点供应
 proxy-providers:
@@ -32,98 +31,76 @@ proxy-providers:
 
 # 2. 策略组
 proxy-groups:
-  # --- 业务分组 ---
   - name: 🤖 全球 AI
     type: select
     proxies: [🇹🇼 台湾故障转移, 🇸🇬 新加坡故障转移, 🇺🇸 美国故障转移, 🚀 节点选择]
 
   - name: 🔍 Google 服务
     type: select
-    proxies: [🇭🇰 香港自动测速, 🇸🇬 新加坡自动测速, 🇯🇵 日本自动测速, 🚀 节点选择]
+    proxies: [🇭🇰 香港自动测速, 🇸🇬 新加坡自动测速, 🚀 节点选择]
 
   - name: 📺 国际视频
     type: select
     proxies: [🇸🇬 新加坡自动测速, 🇹🇼 台湾自动测速, 🇭🇰 香港自动测速, 🇺🇸 美国自动测速, 🚀 节点选择]
 
-  - name: 💬 社交媒体
-    type: select
-    proxies: [🇸🇬 新加坡自动测速, 🇭🇰 香港自动测速, 🇯🇵 日本自动测速, 🚀 节点选择]
-
-  - name: 🍎 Apple 服务
-    type: select
-    proxies: [DIRECT, 🇭🇰 香港自动测速, 🚀 节点选择]
-
-  - name: 🐱 GitHub 加速
-    type: select
-    proxies: [🚀 节点选择, 🇸🇬 新加坡自动测速, 🇺🇸 美国自动测速]
-
   - name: 🚀 节点选择
     type: select
     proxies: [🇸🇬 新加坡自动测速, 🇭🇰 香港自动测速, 🇯🇵 日本自动测速, 🇺🇸 美国自动测速, 🇹🇼 台湾自动测速, DIRECT]
 
-  # --- 地区双模式子组 (已根据你的节点名优化正则) ---
-  - name: 🇸🇬 新加坡自动测速
-    type: url-test
-    use: [airport]
-    filter: "新加坡|SG|Singapore"
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
-  - name: 🇸🇬 新加坡故障转移
-    type: fallback
-    use: [airport]
-    filter: "新加坡|SG|Singapore"
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
-
+  # --- 地区测速与故障转移 (精准匹配您的节点名) ---
   - name: 🇭🇰 香港自动测速
     type: url-test
     use: [airport]
-    filter: "香港|HK|HongKong"
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
-  - name: 🇭🇰 香港故障转移
-    type: fallback
-    use: [airport]
-    filter: "香港|HK|HongKong"
+    filter: "香港"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇯🇵 日本自动测速
     type: url-test
     use: [airport]
-    filter: "日本|JP|Japan"
-    url: "http://www.gstatic.com/generate_204"
-    interval: 300
-  - name: 🇯🇵 日本故障转移
-    type: fallback
-    use: [airport]
-    filter: "日本|JP|Japan"
+    filter: "日本"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇺🇸 美国自动测速
     type: url-test
     use: [airport]
-    filter: "美国|US|States"
+    filter: "美国"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
+
   - name: 🇺🇸 美国故障转移
     type: fallback
     use: [airport]
-    filter: "美国|US|States"
+    filter: "美国"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇹🇼 台湾自动测速
     type: url-test
     use: [airport]
-    filter: "台湾|TW|Taiwan"
+    filter: "台湾"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
+
   - name: 🇹🇼 台湾故障转移
     type: fallback
     use: [airport]
-    filter: "台湾|TW|Taiwan"
+    filter: "台湾"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: 🇸🇬 新加坡自动测速
+    type: url-test
+    use: [airport]
+    filter: "新加坡"
+    url: "http://www.gstatic.com/generate_204"
+    interval: 300
+
+  - name: 🇸🇬 新加坡故障转移
+    type: fallback
+    use: [airport]
+    filter: "新加坡"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
@@ -131,60 +108,18 @@ proxy-groups:
     type: select
     proxies: [🚀 节点选择, DIRECT]
 
-# 3. 常用规则集 (增加更多好用的规则)
-rule-providers:
-  ai:
-    type: http
-    behavior: classical
-    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AI/AI.yaml"
-    path: ./ruleset/ai.yaml
-    interval: 86400
-  ads:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
-    path: ./ruleset/ads.yaml
-    interval: 86400
-  google:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/google.txt"
-    path: ./ruleset/google.yaml
-    interval: 86400
-  telegram:
-    type: http
-    behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/telegram.txt"
-    path: ./ruleset/telegram.yaml
-    interval: 86400
-  github:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/github.txt"
-    path: ./ruleset/github.yaml
-    interval: 86400
-  # 增加：FinalShell 等常用软件分流
-  proxy:
-    type: http
-    behavior: classical
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/proxy.txt"
-    path: ./ruleset/proxy.yaml
-    interval: 86400
-  direct:
-    type: http
-    behavior: domain
-    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/direct.txt"
-    path: ./ruleset/direct.yaml
-    interval: 86400
-
-# 4. 路由规则
+# 3. 规则
 rules:
-  - RULE-SET,ads,REJECT
-  - RULE-SET,ai,🤖 全球 AI
-  - RULE-SET,github,🐱 GitHub 加速
-  - RULE-SET,google,🔍 Google 服务
-  - RULE-SET,telegram,💬 社交媒体
-  - RULE-SET,proxy,🚀 节点选择
-  - RULE-SET,direct,DIRECT
+  # AI 相关规则
+  - DOMAIN-SUFFIX,openai.com,🤖 全球 AI
+  - DOMAIN-SUFFIX,chatgpt.com,🤖 全球 AI
+  - DOMAIN-SUFFIX,anthropic.com,🤖 全球 AI
+  - DOMAIN-SUFFIX,claude.ai,🤖 全球 AI
+  - DOMAIN-SUFFIX,gemini.google.com,🤖 全球 AI
+  - DOMAIN-KEYWORD,ai,🤖 全球 AI
+  # Google 相关
+  - DOMAIN-SUFFIX,google.com,🔍 Google 服务
+  - DOMAIN-SUFFIX,youtube.com,📺 国际视频
+  # 兜底
   - GEOIP,CN,DIRECT
   - MATCH,🐟 漏网之鱼
