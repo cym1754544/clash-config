@@ -1,157 +1,147 @@
 # ========================
-# Clash-Mobile 手机优化版
+# Clash 终极全量版 (含图标 + 地区隔离)
 # ========================
 
-# 机场节点订阅
 proxy-providers:
   龙猫云:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
     type: http
     interval: 36000
-    path: ./proxies/longmao.yaml
     health-check:
       enable: true
       url: https://www.gstatic.com/generate_204
       interval: 300
 
 proxies:
-  - {name: 直连, type: direct}
-  - {name: 拒绝, type: reject}
+  - {name: 🛰️ 直连, type: direct}
+  - {name: 🚫 拒绝, type: reject}
 
-# ========================
-# 基础连接设置
-# ========================
+# 基础设置
 port: 7890
 socks-port: 7891
+redir-port: 7892
 mixed-port: 7893
+tproxy-port: 7895
 allow-lan: true
 mode: rule
 log-level: info
 ipv6: false
 unified-delay: true
 
-# DNS 优化
+# DNS 修复
 dns:
   enable: true
   listen: 0.0.0.0:7874
+  ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   respect-rules: true
+  proxy-server-nameserver:
+    - https://dns.alidns.com/dns-query
+    - 223.5.5.5
   nameserver:
     - https://dns.alidns.com/dns-query
-    - https://doh.pub/dns-query
     - 223.5.5.5
   fallback:
     - https://8.8.8.8/dns-query
-    - https://1.1.1.1/dns-query
-
-# TUN 模式 (手机端核心)
-tun:
-  enable: true
-  stack: mixed
-  auto-route: true
-  auto-detect-interface: true
-  dns-hijack:
-    - "any:53"
+  fake-ip-filter:
+    - "*.lan"
+    - "*.local"
+    - "geosite:cn"
 
 # ========================
-# 策略组模板 (smart 已转为 url-test)
+# 策略组模板 (保留你的原始结构 + 图标)
 # ========================
 default: &default
   type: select
   proxies:
-    - 所有-测速
-    - 香港-测速
-    - 香港-故障切换
-    - 台湾-测速
-    - 台湾-故障切换
-    - 日本-测速
-    - 日本-故障切换
-    - 新加坡-测速
-    - 新加坡-故障切换
-    - 美国-测速
-    - 美国-故障切换
-    - 直连
+    - ⚡ 自动选择-所有
+    - 🇭🇰 香港-智选
+    - 🇭🇰 香港-故转
+    - 🇨🇳 台湾-智选
+    - 🇨🇳 台湾-故转
+    - 🇯🇵 日本-智选
+    - 🇯🇵 日本-故转
+    - 🇸🇬 新加坡-智选
+    - 🇸🇬 新加坡-故转
+    - 🇰🇷 韩国-智选
+    - 🇰🇷 韩国-故转
+    - 🇺🇸 美国-智选
+    - 🇺🇸 美国-故转
+    - 🇬🇧 英国-智选
+    - 🇬🇧 英国-故转
+    - 🛰️ 直连
 
 proxy-groups:
+  # 1. 业务分流组 (复刻原件全量列表)
   - {name: 🤖 AI 常用, <<: *default}
-  - {name: GitHub, <<: *default}
-  - {name: Telegram, <<: *default}
-  - {name: Twitter(X), <<: *default}
-  - {name: YouTube, <<: *default}
-  - {name: TikTok, <<: *default}
-  - {name: Disney, <<: *default}
-  - {name: Netflix, <<: *default}
-  - {name: Spotify, <<: *default}
-  - {name: Apple, <<: *default}
-  - {name: Microsoft, <<: *default}
-  - {name: Google, <<: *default}
-  - {name: Crypto, <<: *default}
-  - {name: 国外, <<: *default}
-  - {name: 国内, <<: *default}
-  - {name: 漏网之鱼, type: select, proxies: [ 香港-测速, 台湾-测速, 新加坡-测速, 直连]}
+  - {name: 🐱 GitHub, <<: *default}
+  - {name: ✈️ Telegram, <<: *default}
+  - {name: 🐦 Twitter(X), <<: *default}
+  - {name: 💬 WhatsApp, <<: *default}
+  - {name: 👥 Facebook, <<: *default}
+  - {name: 📺 YouTube, <<: *default}
+  - {name: 🎵 TikTok, <<: *default}
+  - {name: 🏰 Disney, <<: *default}
+  - {name: 🎥 Netflix, <<: *default}
+  - {name: 🎬 HBO, <<: *default}
+  - {name: 🎧 Spotify, <<: *default}
+  - {name: 🛒 Amazon, <<: *default}
+  - {name: 🍎 Apple, <<: *default}
+  - {name: 💻 Microsoft, <<: *default}
+  - {name: 🔍 Google, <<: *default}
+  - {name: 🟢 Nvidia, <<: *default}
+  - {name: 🎮 Steam, <<: *default}
+  - {name: 🕹️ Game, <<: *default}
+  - {name: 🪙 Crypto, <<: *default}
+  - {name: 🧪 Test, <<: *default}
+  - {name: 🧱 Block, <<: *default}
+  - {name: 🌐 国外, <<: *default}
+  - {name: 🇨🇳 国内, <<: *default}
+  - {name: 🐟 漏网之鱼, type: select, proxies: [🇭🇰 香港-智选, 🇸🇬 新加坡-智选, 🛰️ 直连]}
 
-  # --- 核心自动测速组 ---
-  - name: 所有-测速
+  # 2. 核心自动组 (包含所有节点)
+  - name: ⚡ 自动选择-所有
     type: url-test
-    include-all: true
+    use: [龙猫云]
     url: http://www.gstatic.com/generate_204
     interval: 300
-    tolerance: 50
-    filter: "^((?!(直连|拒绝)).)*$"
 
-  - name: 香港-测速
-    type: url-test
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
+  # 3. 地区分组 (物理隔离：filter 过滤)
+  - {name: 🇭🇰 香港-智选, type: url-test, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇭🇰 香港-故转, type: fallback, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
+  
+  - {name: 🇨🇳 台湾-智选, type: url-test, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇨🇳 台湾-故转, type: fallback, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
 
-  - name: 香港-故障切换
-    type: fallback
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
+  - {name: 🇯🇵 日本-智选, type: url-test, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇯🇵 日本-故转, type: fallback, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
 
-  - name: 台湾-测速
-    type: url-test
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
+  - {name: 🇸🇬 新加坡-智选, type: url-test, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇸🇬 新加坡-故转, type: fallback, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
 
-  - name: 日本-测速
-    type: url-test
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
+  - {name: 🇺🇸 美国-智选, type: url-test, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇺🇸 美国-故转, type: fallback, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
 
-  - name: 新加坡-测速
-    type: url-test
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
+  - {name: 🇰🇷 韩国-智选, type: url-test, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇰🇷 韩国-故转, type: fallback, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
 
-  - name: 美国-测速
-    type: url-test
-    include-all: true
-    url: http://www.gstatic.com/generate_204
-    interval: 300
-    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
+  - {name: 🇬🇧 英国-智选, type: url-test, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - {name: 🇬🇧 英国-故转, type: fallback, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
+
 # ========================
-# 规则集
+# 规则集 (完全按照原件复刻)
 # ========================
 rules:
   - RULE-SET,TEST / Domain,🧪 Test
   - RULE-SET,Block / Domain,🧱 Block  
-  - RULE-SET,Gemini / Domain,🤖 AI 服务
-  - RULE-SET,ChatGPT / Domain,🤖 AI 服务
-  - RULE-SET,Claude / Domain,🤖 AI 服务
-  - RULE-SET,Meta AI / Domain,🤖 AI 服务
-  - RULE-SET,Perplexity / Domain,🤖 AI 服务
+  - RULE-SET,ChatGPT / Domain,🤖 AI 常用
+  - RULE-SET,Gemini / Domain,🤖 AI 常用
+  - RULE-SET,Grok / Domain,🤖 AI 常用
+  - RULE-SET,Claude / Domain,🤖 AI 常用
+  - RULE-SET,Meta AI / Domain,🤖 AI 常用
+  - RULE-SET,Perplexity / Domain,🤖 AI 常用
+  - RULE-SET,Copilot / Domain,🤖 AI 常用
   - RULE-SET,GitHub / Domain,🐱 GitHub
   - RULE-SET,Telegram / Domain,✈️ Telegram
   - RULE-SET,Telegram / IP,✈️ Telegram,no-resolve
@@ -196,7 +186,7 @@ rules:
   - MATCH,🐟 漏网之鱼
 
 # ========================
-# 规则提供者 (全量保留)
+# 规则提供者 (全量原件链接)
 # ========================
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
@@ -206,10 +196,11 @@ rule-anchor:
 rule-providers:
   TEST / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Check.list"}
   ChatGPT / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/openai.mrs"}
+  Grok / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/xai.mrs"}
   Claude / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/Clash/Claude/Claude.list"}
   Meta AI / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/MetaAi.list"}
   Perplexity / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/perplexity.mrs"}
-  Gemini / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Gemini.list"}
+  Copilot / Domain: {<<: *class, url: "https://gh-proxy.com/raw.githubusercontent.com/liandu2024/clash/refs/heads/main/list/Copilot.list"}
   GitHub / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/github.mrs"}
   Telegram / Domain: {<<: *domain, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geosite/telegram.mrs"}  
   Telegram / IP: {<<: *ip, url: "https://gh-proxy.com/github.com/metacubex/meta-rules-dat/raw/refs/heads/meta/geo/geoip/telegram.mrs"}
