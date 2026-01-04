@@ -1,5 +1,5 @@
 # -------------------------------------------------------------------
-# 手机 Clash 定制修正版
+# 手机 Clash 定制修正版 - 适配“美国 01”格式
 # -------------------------------------------------------------------
 port: 7890
 socks-port: 7891
@@ -28,7 +28,7 @@ proxy-providers:
       url: http://www.gstatic.com/generate_204
 
 proxy-groups:
-  # 业务分组
+  # 业务逻辑分组
   - name: 🤖 全球 AI
     type: select
     proxies: [🇹🇼 台湾故障转移, 🇸🇬 新加坡故障转移, 🇺🇸 美国故障转移, 🚀 节点选择]
@@ -41,60 +41,60 @@ proxy-groups:
     type: select
     proxies: [🇸🇬 新加坡自动测速, 🇭🇰 香港自动测速, 🇯🇵 日本自动测速, 🇺🇸 美国自动测速, 🇹🇼 台湾自动测速, DIRECT]
 
-  # 地区子组 (适配：🇺🇸 美国 01 这种命名格式)
+  # 地区测速与故障转移（针对“美国 01”这种带中文的命名优化）
   - name: 🇭🇰 香港自动测速
     type: url-test
     use: [airport]
-    filter: "香港|HK"
+    filter: "香港"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇯🇵 日本自动测速
     type: url-test
     use: [airport]
-    filter: "日本|JP"
+    filter: "日本"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇺🇸 美国自动测速
     type: url-test
     use: [airport]
-    filter: "美国|US"
+    filter: "美国"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇺🇸 美国故障转移
     type: fallback
     use: [airport]
-    filter: "美国|US"
+    filter: "美国"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇹🇼 台湾自动测速
     type: url-test
     use: [airport]
-    filter: "台湾|TW"
+    filter: "台湾"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇹🇼 台湾故障转移
     type: fallback
     use: [airport]
-    filter: "台湾|TW"
+    filter: "台湾"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇸🇬 新加坡自动测速
     type: url-test
     use: [airport]
-    filter: "新加坡|SG"
+    filter: "新加坡"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
   - name: 🇸🇬 新加坡故障转移
     type: fallback
     use: [airport]
-    filter: "新加坡|SG"
+    filter: "新加坡"
     url: "http://www.gstatic.com/generate_204"
     interval: 300
 
@@ -102,17 +102,24 @@ proxy-groups:
     type: select
     proxies: [🚀 节点选择, DIRECT]
 
+# 远程规则集（确保规则集也能正确加载）
+rule-providers:
+  ai:
+    type: http
+    behavior: classical
+    url: "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AI/AI.yaml"
+    path: ./ruleset/ai.yaml
+    interval: 86400
+  ads:
+    type: http
+    behavior: domain
+    url: "https://cdn.jsdelivr.net/gh/Loyalsoldier/clash-rules@release/reject.txt"
+    path: ./ruleset/ads.yaml
+    interval: 86400
+
 rules:
-  # AI 分流
-  - DOMAIN-SUFFIX,openai.com,🤖 全球 AI
-  - DOMAIN-SUFFIX,chatgpt.com,🤖 全球 AI
-  - DOMAIN-SUFFIX,anthropic.com,🤖 全球 AI
-  - DOMAIN-SUFFIX,claude.ai,🤖 全球 AI
-  - DOMAIN-SUFFIX,gemini.google.com,🤖 全球 AI
-  - DOMAIN-KEYWORD,ai,🤖 全球 AI
-  # Google 分流
+  - RULE-SET,ads,REJECT
+  - RULE-SET,ai,🤖 全球 AI
   - DOMAIN-SUFFIX,google.com,🔍 Google 服务
-  - DOMAIN-SUFFIX,youtube.com,🚀 节点选择
-  # 基础分流
   - GEOIP,CN,DIRECT
   - MATCH,🐟 漏网之鱼
