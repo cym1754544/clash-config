@@ -1,5 +1,5 @@
 # ========================
-# Clash 终极全量版 (含图标 + 地区隔离)
+# Clash 终极全量整合版 (AI 聚合 + 地区隔离)
 # ========================
 
 proxy-providers:
@@ -50,7 +50,7 @@ dns:
     - "geosite:cn"
 
 # ========================
-# 策略组模板 (保留你的原始结构 + 图标)
+# 策略组模板
 # ========================
 default: &default
   type: select
@@ -73,12 +73,10 @@ default: &default
     - 🛰️ 直连
 
 proxy-groups:
-  # 1. 业务分流组 (复刻原件全量列表)
-  - {name: 🤖 ChatGPT, <<: *default}
-  - {name: 🤖 Gemini, <<: *default}
-  - {name: 🎨 Claude, <<: *default}
-  - {name: 🧠 Meta AI, <<: *default}
-  - {name: 🔍 Perplexity, <<: *default}
+  # 1. 聚合 AI 组 (整合 ChatGPT, Gemini, Claude, Meta AI, Perplexity)
+  - {name: 🤖 AI 服务, <<: *default}
+
+  # 2. 其他业务分流组
   - {name: 🐱 GitHub, <<: *default}
   - {name: ✈️ Telegram, <<: *default}
   - {name: 🐦 Twitter(X), <<: *default}
@@ -104,46 +102,42 @@ proxy-groups:
   - {name: 🇨🇳 国内, <<: *default}
   - {name: 🐟 漏网之鱼, type: select, proxies: [🇭🇰 香港-智选, 🇸🇬 新加坡-智选, 🛰️ 直连]}
 
-  # 2. 核心自动组 (包含所有节点)
+  # 3. 核心自动组
   - name: ⚡ 自动选择-所有
     type: url-test
     use: [龙猫云]
     url: http://www.gstatic.com/generate_204
     interval: 300
 
-  # 3. 地区分组 (物理隔离：filter 过滤)
+  # 4. 地区分组 (物理隔离)
   - {name: 🇭🇰 香港-智选, type: url-test, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇭🇰 香港-故转, type: fallback, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
-  
   - {name: 🇨🇳 台湾-智选, type: url-test, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇨🇳 台湾-故转, type: fallback, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
-
   - {name: 🇯🇵 日本-智选, type: url-test, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇯🇵 日本-故转, type: fallback, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
-
   - {name: 🇸🇬 新加坡-智选, type: url-test, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇸🇬 新加坡-故转, type: fallback, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
-
   - {name: 🇺🇸 美国-智选, type: url-test, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇺🇸 美国-故转, type: fallback, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
-
   - {name: 🇰🇷 韩国-智选, type: url-test, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇰🇷 韩国-故转, type: fallback, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
-
   - {name: 🇬🇧 英国-智选, type: url-test, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
   - {name: 🇬🇧 英国-故转, type: fallback, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
 
 # ========================
-# 规则集 (完全按照原件复刻)
+# 规则集 (整合 AI 流量)
 # ========================
 rules:
   - RULE-SET,TEST / Domain,🧪 Test
   - RULE-SET,Block / Domain,🧱 Block  
-  - RULE-SET,Gemini / Domain,🤖 Gemini
-  - RULE-SET,ChatGPT / Domain,🤖 ChatGPT
-  - RULE-SET,Claude / Domain,🎨 Claude
-  - RULE-SET,Meta AI / Domain,🧠 Meta AI
-  - RULE-SET,Perplexity / Domain,🔍 Perplexity
+  # 所有 AI 规则统一指向 “🤖 AI 服务”
+  - RULE-SET,Gemini / Domain,🤖 AI 服务
+  - RULE-SET,ChatGPT / Domain,🤖 AI 服务
+  - RULE-SET,Claude / Domain,🤖 AI 服务
+  - RULE-SET,Meta AI / Domain,🤖 AI 服务
+  - RULE-SET,Perplexity / Domain,🤖 AI 服务
+  
   - RULE-SET,GitHub / Domain,🐱 GitHub
   - RULE-SET,Telegram / Domain,✈️ Telegram
   - RULE-SET,Telegram / IP,✈️ Telegram,no-resolve
@@ -188,7 +182,7 @@ rules:
   - MATCH,🐟 漏网之鱼
 
 # ========================
-# 规则提供者 (全量原件链接)
+# 规则提供者 (全量保留)
 # ========================
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
