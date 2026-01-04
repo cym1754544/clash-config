@@ -1,7 +1,8 @@
 # ========================
-# Clash 终极全量版 (含图标 + 地区隔离)
+# Clash-ALL 优化增强版 (Mihomo 内核专用)
 # ========================
 
+# 机场节点订阅
 proxy-providers:
   龙猫云:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
@@ -13,10 +14,12 @@ proxy-providers:
       interval: 300
 
 proxies:
-  - {name: 🛰️ 直连, type: direct}
-  - {name: 🚫 拒绝, type: reject}
+  - {name: 直连, type: direct}
+  - {name: 拒绝, type: reject}
 
-# 基础设置
+# ========================
+# 基础连接设置
+# ========================
 port: 7890
 socks-port: 7891
 redir-port: 7892
@@ -26,9 +29,17 @@ allow-lan: true
 mode: rule
 log-level: info
 ipv6: false
-unified-delay: true
 
-# DNS 修复
+# 面板设置
+external-controller: 0.0.0.0:9090
+external-ui: ui
+external-ui-name: metacubexd
+external-ui-url: "https://github.com/MetaCubeX/Metacubexd/archive/refs/heads/gh-pages.zip"
+secret: "fxESltpe"
+
+# ========================
+# DNS 优化
+# ========================
 dns:
   enable: true
   listen: 0.0.0.0:7874
@@ -38,103 +49,209 @@ dns:
   respect-rules: true
   proxy-server-nameserver:
     - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
     - 223.5.5.5
+    - 119.29.29.29
+  default-nameserver:
+    - 223.5.5.5
+    - 119.29.29.29
   nameserver:
     - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
     - 223.5.5.5
   fallback:
     - https://8.8.8.8/dns-query
+    - https://1.1.1.1/dns-query
+    - tls://dns.google
   fake-ip-filter:
     - "*.lan"
     - "*.local"
     - "geosite:cn"
+    - "+.msftncsi.com"
+    - "+.msftconnecttest.com"
+    - "+.ihovm.com"
+    - "+.google.com"
+    - "stun.*.*"
+    - "ntp.*.*"
+  fallback-filter:
+    geoip: true
+    geoip-code: CN
+    ipcidr:
+      - 240.0.0.0/4
+      - 127.0.0.0/8
+      - 0.0.0.0/32
 
 # ========================
-# 策略组模板 (保留你的原始结构 + 图标)
+# TUN 模式
+# ========================
+tun:
+  enable: true
+  stack: mixed
+  device: utun
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - "any:53"
+
+profile:
+  store-selected: true
+  store-fake-ip: true
+
+# ========================
+# 策略组模板
 # ========================
 default: &default
   type: select
   proxies:
-    - ⚡ 自动选择-所有
-    - 🇭🇰 香港-智选
-    - 🇭🇰 香港-故转
-    - 🇨🇳 台湾-智选
-    - 🇨🇳 台湾-故转
-    - 🇯🇵 日本-智选
-    - 🇯🇵 日本-故转
-    - 🇸🇬 新加坡-智选
-    - 🇸🇬 新加坡-故转
-    - 🇰🇷 韩国-智选
-    - 🇰🇷 韩国-故转
-    - 🇺🇸 美国-智选
-    - 🇺🇸 美国-故转
-    - 🇬🇧 英国-智选
-    - 🇬🇧 英国-故转
-    - 🛰️ 直连
+    - 所有-测速
+    - 香港-测速
+    - 香港-故转
+    - 台湾-测速
+    - 台湾-故转
+    - 日本-测速
+    - 日本-故转
+    - 新加坡-测速
+    - 新加坡-故转
+    - 韩国-测速
+    - 韩国-故转
+    - 美国-测速
+    - 美国-故转
+    - 英国-测速
+    - 英国-故转
+    - 直连
 
 proxy-groups:
-  # 1. 业务分流组 (复刻原件全量列表)
   - {name: 🤖 AI 常用, <<: *default}
-  - {name: 🐱 GitHub, <<: *default}
-  - {name: ✈️ Telegram, <<: *default}
-  - {name: 🐦 Twitter(X), <<: *default}
-  - {name: 💬 WhatsApp, <<: *default}
-  - {name: 👥 Facebook, <<: *default}
-  - {name: 📺 YouTube, <<: *default}
-  - {name: 🎵 TikTok, <<: *default}
-  - {name: 🏰 Disney, <<: *default}
-  - {name: 🎥 Netflix, <<: *default}
-  - {name: 🎬 HBO, <<: *default}
-  - {name: 🎧 Spotify, <<: *default}
-  - {name: 🛒 Amazon, <<: *default}
-  - {name: 🍎 Apple, <<: *default}
-  - {name: 💻 Microsoft, <<: *default}
-  - {name: 🔍 Google, <<: *default}
-  - {name: 🟢 Nvidia, <<: *default}
-  - {name: 🎮 Steam, <<: *default}
-  - {name: 🕹️ Game, <<: *default}
-  - {name: 🪙 Crypto, <<: *default}
-  - {name: 🧪 Test, <<: *default}
-  - {name: 🧱 Block, <<: *default}
-  - {name: 🌐 国外, <<: *default}
-  - {name: 🇨🇳 国内, <<: *default}
-  - {name: 🐟 漏网之鱼, type: select, proxies: [🇭🇰 香港-智选, 🇸🇬 新加坡-智选, 🛰️ 直连]}
+  - {name: GitHub, <<: *default}
+  - {name: Telegram, <<: *default}
+  - {name: Twitter(X), <<: *default}
+  - {name: WhatsApp, <<: *default}
+  - {name: Facebook, <<: *default}
+  - {name: YouTube, <<: *default}
+  - {name: TikTok, <<: *default}
+  - {name: Disney, <<: *default}
+  - {name: Netflix, <<: *default}
+  - {name: HBO, <<: *default}
+  - {name: Spotify, <<: *default}
+  - {name: Amazon, <<: *default}
+  - {name: Apple, <<: *default}
+  - {name: Microsoft, <<: *default}
+  - {name: Google, <<: *default}
+  - {name: Nvidia, <<: *default}
+  - {name: Steam, <<: *default}
+  - {name: Game, <<: *default}
+  - {name: Crypto, <<: *default}
+  - {name: Test, <<: *default}
+  - {name: Block, <<: *default}
+  - {name: 国外, <<: *default}
+  - {name: 国内, <<: *default}
+  - {name: 漏网之鱼, type: select, proxies: [ 香港-测速, 台湾-测速, 新加坡-测速, 香港-故转, 直连]}
 
-  # 2. 核心自动组 (包含所有节点)
-  - name: ⚡ 自动选择-所有
+  # 核心测速组 - 已修复引用逻辑
+  - name: 所有-测速
     type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
     use: [龙猫云]
-    url: http://www.gstatic.com/generate_204
+    filter: "^((?!(直连|拒绝)).)*$"
+
+  - name: 香港-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
     interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
+  - name: 香港-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
 
-  # 3. 地区分组 (物理隔离：filter 过滤)
-  - {name: 🇭🇰 香港-智选, type: url-test, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇭🇰 香港-故转, type: fallback, use: [龙猫云], filter: "(?i)(香港|HK|Hong Kong|🇭🇰)", url: http://www.gstatic.com/generate_204, interval: 300}
-  
-  - {name: 🇨🇳 台湾-智选, type: url-test, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇨🇳 台湾-故转, type: fallback, use: [龙猫云], filter: "(?i)(台湾|TW|Tai Wan|🇹🇼)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 台湾-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
+  - name: 台湾-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
 
-  - {name: 🇯🇵 日本-智选, type: url-test, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇯🇵 日本-故转, type: fallback, use: [龙猫云], filter: "(?i)(日本|JP|Japan|🇯🇵)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 日本-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
+  - name: 日本-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
 
-  - {name: 🇸🇬 新加坡-智选, type: url-test, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇸🇬 新加坡-故转, type: fallback, use: [龙猫云], filter: "(?i)(新加坡|SG|Singapore|🇸🇬)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 新加坡-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
+  - name: 新加坡-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
 
-  - {name: 🇺🇸 美国-智选, type: url-test, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇺🇸 美国-故转, type: fallback, use: [龙猫云], filter: "(?i)(美国|US|United States|🇺🇸)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 美国-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
+  - name: 美国-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
 
-  - {name: 🇰🇷 韩国-智选, type: url-test, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇰🇷 韩国-故转, type: fallback, use: [龙猫云], filter: "(?i)(韩国|KR|Korea|🇰🇷)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 韩国-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(广韩|韩国|KR|🇰🇷|Korea)"
+  - name: 韩国-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(广韩|韩国|KR|🇰🇷|Korea)"
 
-  - {name: 🇬🇧 英国-智选, type: url-test, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
-  - {name: 🇬🇧 英国-故转, type: fallback, use: [龙猫云], filter: "(?i)(英国|UK|Britain|🇬🇧)", url: http://www.gstatic.com/generate_204, interval: 300}
+  - name: 英国-故转
+    type: fallback
+    url: https://www.gstatic.com/generate_204
+    interval: 300
+    use: [龙猫云]
+    filter: "(?i)(英国|UK|🇬🇧|London)"
+  - name: 英国-测速
+    type: url-test
+    url: https://www.gstatic.com/generate_204
+    interval: 600
+    use: [龙猫云]
+    filter: "(?i)(英国|UK|🇬🇧|London)"
 
 # ========================
-# 规则集 (完全按照原件复刻)
+# 规则映射 (保持不变)
 # ========================
 rules:
-  - RULE-SET,TEST / Domain,🧪 Test
-  - RULE-SET,Block / Domain,🧱 Block  
+  - RULE-SET,TEST / Domain,Test
+  - RULE-SET,Block / Domain,Block  
   - RULE-SET,ChatGPT / Domain,🤖 AI 常用
   - RULE-SET,Gemini / Domain,🤖 AI 常用
   - RULE-SET,Grok / Domain,🤖 AI 常用
@@ -142,51 +259,49 @@ rules:
   - RULE-SET,Meta AI / Domain,🤖 AI 常用
   - RULE-SET,Perplexity / Domain,🤖 AI 常用
   - RULE-SET,Copilot / Domain,🤖 AI 常用
-  - RULE-SET,GitHub / Domain,🐱 GitHub
-  - RULE-SET,Telegram / Domain,✈️ Telegram
-  - RULE-SET,Telegram / IP,✈️ Telegram,no-resolve
-  - RULE-SET,Twitter / Domain,🐦 Twitter(X)
-  - RULE-SET,WhatsApp / Domain,💬 WhatsApp
-  - RULE-SET,Facebook / Domain,👥 Facebook
-  - RULE-SET,Amazon / Domain,🛒 Amazon
-  - RULE-SET,Apple / Domain,🍎 Apple
-  - RULE-SET,Apple-CN / Domain,🍎 Apple  
-  - RULE-SET,Microsoft / Domain,💻 Microsoft
-  - RULE-SET,OKX / Domain,🪙 Crypto
-  - RULE-SET,Bybit / Domain,🪙 Crypto
-  - RULE-SET,Binance / Domain,🪙 Crypto
-  - RULE-SET,Youtube / Domain,📺 YouTube
-  - RULE-SET,TikTok / Domain,🎵 TikTok
-  - RULE-SET,Netflix / Domain,🎥 Netflix
-  - RULE-SET,Netflix / IP,🎥 Netflix,no-resolve
-  - RULE-SET,Disney / Domain,🏰 Disney
-  - RULE-SET,HBO / Domain,🎬 HBO
-  - RULE-SET,Spotify / Domain,🎧 Spotify
-  - RULE-SET,Steam / Domain,🎮 Steam
-  - RULE-SET,Epic / Domain,🕹️ Game
-  - RULE-SET,EA / Domain,🕹️ Game
-  - RULE-SET,Blizzard / Domain,🕹️ Game
-  - RULE-SET,UBI / Domain,🕹️ Game
-  - RULE-SET,PlayStation / Domain,🕹️ Game
-  - RULE-SET,Nintend / Domain,🕹️ Game
-  - RULE-SET,Google / Domain,🔍 Google
-  - RULE-SET,Google / IP,🔍 Google,no-resolve
-  - RULE-SET,Nvidia / Domain,🟢 Nvidia
-  - RULE-SET,Crunchyroll / Domain,🌐 国外
-  - RULE-SET,Reddit / Domain,🌐 国外
-  - RULE-SET,Proxy / Domain,🌐 国外
-  - RULE-SET,Globe / Domain,🌐 国外  
-  - RULE-SET,Direct / Domain,🇨🇳 国内
-  - RULE-SET,China / Domain,🇨🇳 国内
-  - RULE-SET,China / IP,🇨🇳 国内,no-resolve
-  - RULE-SET,Private / Domain,🇨🇳 国内
-  - RULE-SET,GFW / Domain,🌐 国外
-  - GEOIP,LAN,🛰️ 直连,no-resolve
-  - GEOIP,CN,🇨🇳 国内,no-resolve
-  - MATCH,🐟 漏网之鱼
+  - RULE-SET,GitHub / Domain,GitHub
+  - RULE-SET,Telegram / Domain,Telegram
+  - RULE-SET,Telegram / IP,Telegram,no-resolve
+  - RULE-SET,Twitter / Domain,Twitter(X)
+  - RULE-SET,WhatsApp / Domain,WhatsApp
+  - RULE-SET,Facebook / Domain,Facebook
+  - RULE-SET,Amazon / Domain,Amazon
+  - RULE-SET,Apple / Domain,Apple
+  - RULE-SET,Apple-CN / Domain,Apple  
+  - RULE-SET,Microsoft / Domain,Microsoft
+  - RULE-SET,OKX / Domain,Crypto
+  - RULE-SET,Bybit / Domain,Crypto
+  - RULE-SET,Binance / Domain,Crypto
+  - RULE-SET,Youtube / Domain,YouTube
+  - RULE-SET,TikTok / Domain,TikTok
+  - RULE-SET,Netflix / Domain,Netflix
+  - RULE-SET,Netflix / IP,Netflix,no-resolve
+  - RULE-SET,Disney / Domain,Disney
+  - RULE-SET,HBO / Domain,HBO
+  - RULE-SET,Spotify / Domain,Spotify
+  - RULE-SET,Steam / Domain,Steam
+  - RULE-SET,Epic / Domain,Game
+  - RULE-SET,EA / Domain,Game
+  - RULE-SET,Blizzard / Domain,Game
+  - RULE-SET,UBI / Domain,Game
+  - RULE-SET,PlayStation / Domain,Game
+  - RULE-SET,Nintend / Domain,Game
+  - RULE-SET,Google / Domain,Google
+  - RULE-SET,Google / IP,Google,no-resolve
+  - RULE-SET,Nvidia / Domain,Nvidia
+  - RULE-SET,Proxy / Domain,国外
+  - RULE-SET,Globe / Domain,国外  
+  - RULE-SET,Direct / Domain,国内
+  - RULE-SET,China / Domain,国内
+  - RULE-SET,China / IP,国内,no-resolve
+  - RULE-SET,Private / Domain,国内
+  - RULE-SET,GFW / Domain,国外
+  - GEOIP,LAN,直连,no-resolve
+  - GEOIP,CN,国内,no-resolve
+  - MATCH,漏网之鱼
 
 # ========================
-# 规则提供者 (全量原件链接)
+# 规则集提供者 (保持不变)
 # ========================
 rule-anchor:
   ip: &ip {type: http, interval: 86400, behavior: ipcidr, format: mrs}
