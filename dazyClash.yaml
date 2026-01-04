@@ -191,7 +191,7 @@ proxy-groups:
   - name: 🤖 AI集合
     <<: *fallback_collection
 
-  - name: 🔍 Google&Gemini
+  - name: 🔍 Google和Gemini
     <<: *fallback_collection
 
   - name: 🛡️ 故障转移场景
@@ -281,14 +281,14 @@ rules:
   - GEOSITE,github,⚡ 自动测速场景
   - GEOSITE,twitter,⚡ 自动测速场景
   - GEOSITE,youtube,🛡️ 故障转移场景
-  - GEOSITE,google,🔍 Google&Gemini
+  - GEOSITE,google,🔍 Google和Gemini
   - GEOSITE,telegram,⚡ 自动测速场景
   - GEOSITE,netflix,🛡️ 故障转移场景
   - GEOSITE,bilibili, 直连
   - GEOSITE,spotify,🛡️ 故障转移场景
   - GEOSITE,CN,直连
   - GEOSITE,geolocation-!cn,⚡ 自动测速场景
-  - GEOIP,google,🔍 Google,no-resolve
+  - GEOIP,google,🔍 Google和Gemini,no-resolve
   - GEOIP,netflix,🛡️ 故障转移场景,no-resolve
   - GEOIP,telegram,⚡ 自动测速场景,no-resolve
   - GEOIP,twitter,⚡ 自动测速场景,no-resolve

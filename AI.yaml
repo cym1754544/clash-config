@@ -8,6 +8,7 @@ proxy-providers:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
     type: http
     interval: 36000
+    path: ./proxies.yaml
     health-check:
       enable: true
       url: https://www.gstatic.com/generate_204
