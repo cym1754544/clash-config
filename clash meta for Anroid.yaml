@@ -1,200 +1,146 @@
 # ========================
-# Clash 终极全量整合版 (测速优化版)
+# Clash-Mobile 手机优化版
 # ========================
 
+# 机场节点订阅
 proxy-providers:
   龙猫云:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
     type: http
     interval: 36000
+    path: ./proxies/longmao.yaml
     health-check:
       enable: true
       url: https://www.gstatic.com/generate_204
       interval: 300
 
 proxies:
-  - {name: 🛰️ 直连, type: direct}
-  - {name: 🚫 拒绝, type: reject}
+  - {name: 直连, type: direct}
+  - {name: 拒绝, type: reject}
 
-# 基础设置
+# ========================
+# 基础连接设置
+# ========================
 port: 7890
 socks-port: 7891
-redir-port: 7892
 mixed-port: 7893
-tproxy-port: 7895
 allow-lan: true
 mode: rule
 log-level: info
 ipv6: false
 unified-delay: true
 
-# DNS 修复
+# DNS 优化
 dns:
   enable: true
   listen: 0.0.0.0:7874
-  ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   respect-rules: true
-  proxy-server-nameserver:
-    - https://dns.alidns.com/dns-query
-    - 223.5.5.5
   nameserver:
     - https://dns.alidns.com/dns-query
+    - https://doh.pub/dns-query
     - 223.5.5.5
   fallback:
     - https://8.8.8.8/dns-query
-  fake-ip-filter:
-    - "*.lan"
-    - "*.local"
-    - "geosite:cn"
+    - https://1.1.1.1/dns-query
+
+# TUN 模式 (手机端核心)
+tun:
+  enable: true
+  stack: mixed
+  auto-route: true
+  auto-detect-interface: true
+  dns-hijack:
+    - "any:53"
 
 # ========================
-# 策略组模板
+# 策略组模板 (smart 已转为 url-test)
 # ========================
 default: &default
   type: select
   proxies:
-    - ⚡ 所有-测速
-    - 🇭🇰 香港-测速
-    - 🇭🇰 香港-故转
-    - 🇨🇳 台湾-测速
-    - 🇨🇳 台湾-故转
-    - 🇯🇵 日本-测速
-    - 🇯🇵 日本-故转
-    - 🇸🇬 新加坡-测速
-    - 🇸🇬 新加坡-故转
-    - 🇰🇷 韩国-测速
-    - 🇰🇷 韩国-故转
-    - 🇺🇸 美国-测速
-    - 🇺🇸 美国-故转
-    - 🇬🇧 英国-测速
-    - 🇬🇧 英国-故转
-    - 🛰️ 直连
+    - 所有-测速
+    - 香港-测速
+    - 香港-故障切换
+    - 台湾-测速
+    - 台湾-故障切换
+    - 日本-测速
+    - 日本-故障切换
+    - 新加坡-测速
+    - 新加坡-故障切换
+    - 美国-测速
+    - 美国-故障切换
+    - 直连
 
 proxy-groups:
-  # 1. 聚合 AI 组
-  - {name: 🤖 AI 服务, <<: *default}
+  - {name: 🤖 AI 常用, <<: *default}
+  - {name: GitHub, <<: *default}
+  - {name: Telegram, <<: *default}
+  - {name: Twitter(X), <<: *default}
+  - {name: YouTube, <<: *default}
+  - {name: TikTok, <<: *default}
+  - {name: Disney, <<: *default}
+  - {name: Netflix, <<: *default}
+  - {name: Spotify, <<: *default}
+  - {name: Apple, <<: *default}
+  - {name: Microsoft, <<: *default}
+  - {name: Google, <<: *default}
+  - {name: Crypto, <<: *default}
+  - {name: 国外, <<: *default}
+  - {name: 国内, <<: *default}
+  - {name: 漏网之鱼, type: select, proxies: [ 香港-测速, 台湾-测速, 新加坡-测速, 直连]}
 
-  # 2. 其他业务分流组
-  - {name: 🐱 GitHub, <<: *default}
-  - {name: ✈️ Telegram, <<: *default}
-  - {name: 🐦 Twitter(X), <<: *default}
-  - {name: 💬 WhatsApp, <<: *default}
-  - {name: 👥 Facebook, <<: *default}
-  - {name: 📺 YouTube, <<: *default}
-  - {name: 🎵 TikTok, <<: *default}
-  - {name: 🏰 Disney, <<: *default}
-  - {name: 🎥 Netflix, <<: *default}
-  - {name: 🎬 HBO, <<: *default}
-  - {name: 🎧 Spotify, <<: *default}
-  - {name: 🛒 Amazon, <<: *default}
-  - {name: 🍎 Apple, <<: *default}
-  - {name: 💻 Microsoft, <<: *default}
-  - {name: 🔍 Google, <<: *default}
-  - {name: 🟢 Nvidia, <<: *default}
-  - {name: 🎮 Steam, <<: *default}
-  - {name: 🕹️ Game, <<: *default}
-  - {name: 🪙 Crypto, <<: *default}
-  - {name: 🧪 Test, <<: *default}
-  - {name: 🧱 Block, <<: *default}
-  - {name: 🌐 国外, <<: *default}
-  - {name: 🇨🇳 国内, <<: *default}
-  - {name: 🐟 漏网之鱼, type: select, proxies: [🇭🇰 香港-测速, 🇸🇬 新加坡-测速, 🛰️ 直连]}
-
-  # 3. 核心测速组
-  - name: ⚡ 所有-测速
+  # --- 核心自动测速组 ---
+  - name: 所有-测速
     type: url-test
-    use: [龙猫云]
+    include-all: true
     url: http://www.gstatic.com/generate_204
     interval: 300
+    tolerance: 50
     filter: "^((?!(直连|拒绝)).)*$"
 
-  # 4. 地区分组 (改为 url-test)
-  - name: 🇭🇰 香港-故转
-    type: fallback
-    use: [龙猫云]
+  - name: 香港-测速
+    type: url-test
+    include-all: true
+    url: http://www.gstatic.com/generate_204
     interval: 300
     filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
-  - name: 🇭🇰 香港-测速
-    type: url-test
-    use: [龙猫云]
+
+  - name: 香港-故障切换
+    type: fallback
+    include-all: true
     url: http://www.gstatic.com/generate_204
-    interval: 600
+    interval: 300
     filter: "(?i)(广港|香港|HK|Hong Kong|🇭🇰)"
 
-  - name: 🇨🇳 台湾-故转
-    type: fallback
-    use: [龙猫云]
+  - name: 台湾-测速
+    type: url-test
+    include-all: true
+    url: http://www.gstatic.com/generate_204
     interval: 300
     filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
-  - name: 🇨🇳 台湾-测速
-    type: url-test
-    use: [龙猫云]
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-    filter: "(?i)(广台|台湾|台灣|TW|Tai Wan|🇹🇼)"
 
-  - name: 🇯🇵 日本-故转
-    type: fallback
-    use: [龙猫云]
+  - name: 日本-测速
+    type: url-test
+    include-all: true
+    url: http://www.gstatic.com/generate_204
     interval: 300
     filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
-  - name: 🇯🇵 日本-测速
-    type: url-test
-    use: [龙猫云]
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-    filter: "(?i)(广日|日本|JP|东京|大阪|🇯🇵|Japan)"
 
-  - name: 🇸🇬 新加坡-故转
-    type: fallback
-    use: [龙猫云]
+  - name: 新加坡-测速
+    type: url-test
+    include-all: true
+    url: http://www.gstatic.com/generate_204
     interval: 300
     filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
-  - name: 🇸🇬 新加坡-测速
-    type: url-test
-    use: [龙猫云]
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-    filter: "(?i)(广新|新加坡|SG|坡|🇸🇬|Singapore)"
 
-  - name: 🇺🇸 美国-故转
-    type: fallback
-    use: [龙猫云]
+  - name: 美国-测速
+    type: url-test
+    include-all: true
+    url: http://www.gstatic.com/generate_204
     interval: 300
     filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
-  - name: 🇺🇸 美国-测速
-    type: url-test
-    use: [龙猫云]
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-    filter: "(?i)(广美|US|美国|纽约|洛杉矶|圣何塞|🇺🇸|United States)"
-
-  # 补充韩国和英国模板中提到的组
-  - name: 🇰🇷 韩国-测速
-    type: url-test
-    use: [龙猫云]
-    filter: "(?i)(韩国|KR|Korea|🇰🇷)"
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-  - name: 🇰🇷 韩国-故转
-    type: fallback
-    use: [龙猫云]
-    filter: "(?i)(韩国|KR|Korea|🇰🇷)"
-    interval: 300
-  - name: 🇬🇧 英国-测速
-    type: url-test
-    use: [龙猫云]
-    filter: "(?i)(英国|UK|Britain|🇬🇧)"
-    url: http://www.gstatic.com/generate_204
-    interval: 600
-  - name: 🇬🇧 英国-故转
-    type: fallback
-    use: [龙猫云]
-    filter: "(?i)(英国|UK|Britain|🇬🇧)"
-    interval: 300
-
 # ========================
 # 规则集
 # ========================
