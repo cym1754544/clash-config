@@ -13,7 +13,7 @@ proxy-providers:
 
 # 基础连接设置
 mixed-port: 7890
-ipv6: true
+ipv6: false
 allow-lan: true
 unified-delay: false
 tcp-concurrent: true
@@ -178,14 +178,6 @@ templates:
     lazy: true             # 闲时探测，不消耗额外流量
     # 建议加上过滤，排除掉国内节点或无效节点
     filter: "(?i)(香港|HK|美国|US|新加坡|SG|日本|JP|台湾|TW|韩国|KR|英国|UK)"
-
-  #原始节点手选集合
-  origin_node: &origin_node
-    type: select
-    include-all: true  # 自动拉入所有原始节点
-    proxies:
-      - 直连
-      - 拒绝
 
 proxy-groups:
   - name: 🤖 AI集合
