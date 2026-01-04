@@ -191,7 +191,7 @@ proxy-groups:
   - name: 🤖 AI集合
     <<: *fallback_collection
 
-  - name: 🔍 Google
+  - name: 🔍 Google&Gemini
     <<: *fallback_collection
 
   - name: 🛡️ 故障转移场景
@@ -275,17 +275,13 @@ rules:
   - DOMAIN-KEYWORD,anthropic,🤖 AI集合
   - GEOSITE,anthropic,🤖 AI集合
 
-  # Gemini (从 Google 剥离)
-  - DOMAIN,gemini.google.com,🤖 AI集合
-  - DOMAIN-KEYWORD,generativelanguage,🤖 AI集合
-
   # Perplexity
   - GEOSITE,perplexity,🤖 AI集合
 
   - GEOSITE,github,⚡ 自动测速场景
   - GEOSITE,twitter,⚡ 自动测速场景
   - GEOSITE,youtube,🛡️ 故障转移场景
-  - GEOSITE,google,🔍 Google
+  - GEOSITE,google,🔍 Google&Gemini
   - GEOSITE,telegram,⚡ 自动测速场景
   - GEOSITE,netflix,🛡️ 故障转移场景
   - GEOSITE,bilibili, 直连
