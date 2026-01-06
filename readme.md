@@ -8,4 +8,4 @@
 
 最终示例：https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/AI.yaml
 
-最终示例：https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/clashForAndroid.yaml
+最终示例：https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/clashForAndroid.yaml](https://ghproxy.net/https://raw.githubusercontent.com/cym1754544/clash-config/main/dazyClash.yaml
