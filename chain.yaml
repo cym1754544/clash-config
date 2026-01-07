@@ -20,10 +20,10 @@ proxy-providers:
 proxies:
   - name: "美国住宅IP-出口"
     type: socks5
-    server: 38.13.156.147
-    port: 443
-    username: novRcXtRSTjpn
-    password: riD5jHQkjs
+    server: 107.150.104.94
+    port: 1318
+    username: 78ADH6P9
+    password: 5JY3BR7U
     udp: true
     # 核心修改：指定这个住宅IP必须经过机场节点
     dialer-proxy: "🔰 选择中转节点"
