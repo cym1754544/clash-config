@@ -1,0 +1,47 @@
+port: 7890
+socks-port: 7891
+allow-lan: true
+mode: rule
+log-level: info
+
+# 1. 你的机场订阅
+proxy-providers:
+  my_airport:
+    type: http
+    url: "https://yun-api.subcloud.xyz/sub?target=clash&url=https%3A%2F%2Flinka.lmscunb.cc%3A2087%2Fapi%2Fv1%2Fclient%2Fsubscribe%3Ftoken%3D0ae477b0dbd2dc06c57a479754078a23&insert=false&config=https%3A%2F%2Fcdn.jsdelivr.net%2Fgh%2FSleepyHeeead%2Fsubconverter-config%40master%2Fremote-config%2Fspecial%2Fbasic.ini&emoji=true&list=true&tfo=false&scv=true&fdn=false&sort=false&new_name=true"
+    interval: 3600
+    path: ./airport.yaml
+    health-check:
+      enable: true
+      interval: 600
+      url: http://www.gstatic.com/generate_204
+
+# 2. 你的美国住宅 IP 信息
+proxies:
+  - name: "美国住宅IP-出口"
+    type: socks5
+    server: 38.13.156.147
+    port: 443
+    username: novRcXtRSTjpn
+    password: riD5jHQkjs
+    udp: true
+    # 核心修改：指定这个住宅IP必须经过机场节点
+    dialer-proxy: "🔰 选择中转节点"
+
+# 3. 策略组
+proxy-groups:
+  - name: "🔰 选择中转节点"
+    type: select
+    use:
+      - my_airport
+
+  - name: "🚀 最终出口状态"
+    type: select
+    proxies:
+      - "美国住宅IP-出口"
+      - "🔰 选择中转节点"
+      - DIRECT
+
+# 4. 规则
+rules:
+  - MATCH,🚀 最终出口状态
