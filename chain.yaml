@@ -21,9 +21,9 @@ proxies:
   - name: "美国住宅IP-出口"
     type: socks5
     server: 107.150.104.94
-    port: 1318
-    username: 78ADH6P9
-    password: 5JY3BR7U
+    port: 1166
+    username: PUJNJR2G
+    password: JZ7U7MJY
     udp: true
     # 核心修改：指定这个住宅IP必须经过机场节点
     dialer-proxy: "🔰 选择中转节点"
