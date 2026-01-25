@@ -103,6 +103,7 @@ dns:
     - "speedtest.net" # 增加测速过滤
     - "stun.*.*"
     - "ntp.*.*"
+    - "+.dazyhome.dynv6.net"
     
   fallback-filter:
     geoip: true
@@ -251,6 +252,7 @@ proxy-groups:
 
 rules:
   - GEOIP,lan,直连,no-resolve
+  - DOMAIN-SUFFIX,dazyhome.dynv6.net,直连
   #STEAM+EPIC
   - GEOSITE,steam@cn,直连
   # 匹配 Epic 的下载域名 (Epic 规则通常包含在 epicgames 中，这里提取下载特征)
