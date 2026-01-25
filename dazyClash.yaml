@@ -13,7 +13,7 @@ proxy-providers:
 
 # 基础连接设置
 mixed-port: 7890
-ipv6: true
+ipv6: false
 allow-lan: true
 unified-delay: false
 tcp-concurrent: true
@@ -72,7 +72,7 @@ tun:
 dns:
   enable: true
   listen: 0.0.0.0:7874
-  ipv6: true
+  ipv6: false
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   respect-rules: true
