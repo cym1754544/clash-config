@@ -4,8 +4,8 @@ proxy-providers:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
     type: http
     interval: 36000
-    # path为缓存路径
-    path: ./airport1.yaml  
+    # path为缓存路径，注释掉手机端可以使用
+    # path: ./airport1.yaml  
     health-check:
       enable: true
       url: https://www.gstatic.com/generate_204
@@ -18,11 +18,11 @@ allow-lan: true
 unified-delay: false
 tcp-concurrent: true
 
-#UI面板设置
-external-controller: 127.0.0.1:9090
-external-ui: ui
-external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-secret: "cym1754544"
+#UI面板设置，注释掉手机端可以使用
+#external-controller: 127.0.0.1:9090
+#external-ui: ui
+#external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
+#secret: "cym1754544"
 
 #如何处理地理位置数据库
 geodata-mode: true
