@@ -22,7 +22,7 @@ tcp-concurrent: true
 #external-controller: 127.0.0.1:9090
 #external-ui: ui
 #external-ui-url: "https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-#secret: "cym1754544"
+secret: "cym1754544"
 
 #如何处理地理位置数据库
 geodata-mode: true
