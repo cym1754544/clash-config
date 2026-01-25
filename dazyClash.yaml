@@ -1,4 +1,4 @@
-    # 机场节点订阅
+# 机场节点订阅
 proxy-providers:
   airport1:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
