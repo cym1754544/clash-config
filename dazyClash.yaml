@@ -1,4 +1,4 @@
-# 机场节点订阅
+    # 机场节点订阅
 proxy-providers:
   airport1:
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
@@ -13,7 +13,7 @@ proxy-providers:
 
 # 基础连接设置
 mixed-port: 7890
-ipv6: false
+ipv6: true
 allow-lan: true
 unified-delay: false
 tcp-concurrent: true
@@ -72,7 +72,7 @@ tun:
 dns:
   enable: true
   listen: 0.0.0.0:7874
-  ipv6: false
+  ipv6: true
   enhanced-mode: fake-ip
   fake-ip-range: 198.18.0.1/16
   respect-rules: true
@@ -251,6 +251,17 @@ proxy-groups:
 
 rules:
   - GEOIP,lan,直连,no-resolve
+  #STEAM+EPIC
+  - GEOSITE,steam@cn,直连
+  # 匹配 Epic 的下载域名 (Epic 规则通常包含在 epicgames 中，这里提取下载特征)
+  - DOMAIN-SUFFIX,akamaized.net,直连
+  - DOMAIN-KEYWORD,epicgames.download,直连
+  
+  # ========================
+  # 游戏商店/社区分流 (走代理保证能打开网页)
+  # ========================
+  - GEOSITE,steam,⚡ 自动测速场景
+  - GEOSITE,epicgames,⚡ 自动测速场景
   # ------AI-----
   # Grok (xAI)
   - DOMAIN-SUFFIX,x.ai,🤖 AI集合
