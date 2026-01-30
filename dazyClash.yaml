@@ -1,7 +1,7 @@
 # 机场节点订阅
 proxy-providers:
   airport1:
-    url: "https://sub01.fkknet.cn/api/v1/client/subscribe?token=NDYwMDk6YTIzOWJlMTE4MGRmODljN2U4OTI0YzVjOTkzMzBiMWVlODI1MzJkMw"
+    url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=e34ee1b54c8c5e41e5eb6adc72c8b43c"
     type: http
     interval: 36000
     # path为缓存路径，注释掉手机端可以使用
