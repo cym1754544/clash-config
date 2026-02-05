@@ -83,14 +83,17 @@ dns:
   default-nameserver:
     - 223.5.5.5
     - 119.29.29.29
+    - 2400:3200::1
     
   nameserver:
     - https://dns.alidns.com/dns-query
     - https://doh.pub/dns-query
+    - 2400:3200::1
     
   fallback:
     - https://dns.google/dns-query
     - https://1.1.1.1/dns-query
+    - 2001:4860:4860::8888  
     
   fake-ip-filter:
     - "*.lan"
@@ -254,7 +257,7 @@ proxy-groups:
 
 rules:
   - GEOIP,lan,直连,no-resolve
-  - DOMAIN-SUFFIX,dazyhome.dynv6.net,直连
+  - DOMAIN-SUFFIX,dazyhub.top,直连
   #STEAM+EPIC
   - GEOSITE,steam@cn,直连
   # 匹配 Epic 的下载域名 (Epic 规则通常包含在 epicgames 中，这里提取下载特征)
