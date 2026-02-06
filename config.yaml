@@ -155,14 +155,10 @@ p: &p
 # 代理提供(订阅)组
 # url 里填写自己的订阅,名称不能重复
 proxy-providers:
-  机场1: 龙猫云机场
+  机场1:
     <<: *p
     url: "https://linka.lmscunb.cc:2087/api/v1/client/subscribe?token=0ae477b0dbd2dc06c57a479754078a23"
     # path: ./proxy_providers/jichang1.yaml #指定保存路径 非必填
-
-   机场2: 超实惠机场
-     <<: *p
-     url: "https://sub01.fkknet.cn/api/v1/client/subscribe?token=e8e338bc9896f0dfb1831fea0a4ebe6c"
 
 # 代理组
 proxy-groups:
